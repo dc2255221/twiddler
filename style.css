@@ -1,14 +1,17 @@
 #logo {
   position: fixed;
-  margin: 0px;
+  margin-top: -10px;
+  margin-left: -10px;
   text-align: center;
-  width: 100%;
+  width: 102%;
   height: 90px;
   font-size: 70px;
   color:skyblue;
   font-family: 'Courier New', Courier, monospace;
   background-color: black;
   letter-spacing: 3px;
+  margin
+  margin-left: -10px;
 }
 
 #bird-image {
@@ -76,14 +79,16 @@
 
 #text-box {
   background-color: #e6ffff;
+  border-radius: 5px;;
 }
 
 #submit-tweet-button {
-
+  width: 50%;
+  background-color: black;
 }
 
 /*
-.tweetbox {
+.tweets {
   color: blue;
   padding: 5px 5px 0px;
   background-color: skyblue;
