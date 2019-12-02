@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title> Don's Twittler </title>
+    <link href="style.css" rel="stylesheet" type="text/css">
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
   </head>
@@ -11,14 +13,147 @@
         var $body = $('body');
         $body.html('');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
+        // setting up heading
+        var $heading = $("<h1 id='logo'> TWIDDLER </h1>");
+        var $birdImage = $("<img id='bird-image' src='bird.png' height='60px' width='60px'></img>");
+        $birdImage.prependTo($heading);
+        $heading.appendTo($body);
+
+        // setting up three sections
+        var $left = $("<div class='left section'> </div>");
+        var $center = $("<div class='center section'> </div>")
+        var $right = $("<div class='right section'> </div>");
+        $left.appendTo($body);
+        $center.appendTo($body);
+        $right.appendTo($body);
+
+        // creating all-tweets-box and other users' box
+        var $allTweetsBox = $("<div id='all-tweets-box'></div>");
+        var $userTweetsBox = $("<div id='user-tweets-box'></div>");
+        // var $shawnDrostBox = $("<div id='shawndrost-box></div>");
+        // var $douglasCalhounBox = $("<div id='douglascalhoun-box></div>");
+        // var $sharksForCheapBox = $("<div id='sharksforcheap-box></div>");
+        // var $mracusBox = $("<div id='mracus-box></div>");
+
+        $allTweetsBox.appendTo($center);
+        $userTweetsBox.appendTo($center);
+        // $shawnDrostBox.appendTo($center);
+        // $douglasCalhounBox.appendTo($center);
+        // $sharksForCheapBox.appendTo($center);
+        // $mracusBox.appendTo($center);
+
+        // add tweets function
+        function generateTweets() {
+          var index = streams.home.length - 1;
+          while(index >= 0) {
+            // setting up elements of a tweet
+            var tweet = streams.home[index];
+            var $tweet =  $(`<span class="@${tweet.user}: tweets" id="tweet-${index}"></span>`);
+            var $user = $(`<a class="${tweet.user} user" href='#'> @${tweet.user}: </a>`);
+            var $message = $(`<p class='message'> ${tweet.message} </p>`);
+            var $date = $(`<p class='date'> ${tweet.created_at} </p>`);
+
+            $tweet.appendTo($allTweetsBox);
+            $user.appendTo($tweet);
+            $message.appendTo($tweet);
+            $date.appendTo($tweet);
+
+            index -= 1;
+          }
         }
+        generateTweets();
+
+        // setting up dummy navigation pane
+        var $navigation = $("<div id='nav-pane'> </div");
+        $navigation.appendTo($left);
+        $("<li class='nav'><a href='#'> Home </a></li>").appendTo($navigation);
+        $("<li class='nav'> <a href='#'> Explore </a></li>").appendTo($navigation);
+        $("<li class='nav'><a href='#'> Notifications </a></l>").appendTo($navigation);
+        $("<li class='nav'><a href='#'> Messages </a></li>").appendTo($navigation);
+        $("<li class='nav'><a href='#'> Bookmarks </a></li>").appendTo($navigation);
+        $("<li class='nav'><a href='#'> Profile </a></li> <br>").appendTo($navigation);
+
+        // // function to hide all user boxes
+        // var hideAllUserBoxes = function(){
+        //   $("#mracus-box").hide();
+        //   $("#douglascalhoun-box").hide();
+        //   $("#sharksforcheap-box").hide();
+        //   $("#shawndrost-box").hide();
+        // };
+        // hideAllUserBoxes();
+
+        // new-tweets-button
+        var $buttons= $("<div></div>")
+        $buttons.appendTo($left);
+        var $newTweetsButton = $("<button class='btn' id='new-tweets-button'> Check New Tweets </button><br>")
+        $newTweetsButton.appendTo($buttons);
+        $("#new-tweets-button").click(function(){
+          $(".tweets").remove();
+          generateTweets();
+        })
+
+        // all-tweets-button
+        var $allTweetsButton = $(`<button class='btn' id='all-tweets-button'> Check All Tweets </button>`);
+        $allTweetsButton.appendTo($buttons);
+        $("#all-tweets-button").click(function(){
+          $("#all-tweets-box").show();
+        })
+
+        var $homeButton = $(`<button class='btn' id='home-button'> Home </button>`);
+        $homeButton.appendTo($buttons);
+        $homeButton.hide();
+        $("#home-button").on("click", function () {
+          $('#nav-pane').show();
+          $("#all-tweets-button").show();
+          $("#new-tweets-button").show();
+          $("#text-box").show();
+          $("#submit-tweet-button").show();
+          $("#home-button").hide();
+          $("#user-tweets-box").hide();
+          $("#all-tweets-box").show();
+        })
+
+        //add event listener to show clicked users' box
+        $(".user").on("click", function(){
+          $('#nav-pane').hide();
+          $("#new-tweets-button").hide();
+          $("#all-tweets-button").hide();
+          $("#text-box").hide();
+          $("#submit-tweet-button").hide();
+          $("#home-button").show();
+          $("#all-tweets-box").hide();
+
+          var targetUser = $(this).text();
+
+          for (let i=streams.home.length; i >= 0; i--) {
+            let tweet = streams.home[i];
+            if (tweet.user === targetUser){
+              var $tweetFeed = $('<div class=tweet></div>')
+              $tweetFeed.text(`@${tweet.user}: ${tweet.message} ${tweet.create_at}`);
+              $tweetFeed.appendTo("#user-tweet-box");
+            }
+          }
+          $('#user-tweets-box').show();
+        })
+
+        // // create text area
+        var $textBox = $("<textarea id='text-box' rows='10' cols='50 height= '200px' placeholder='Tweet something...'></textarea>");
+        $textBox.appendTo($right);
+        var $submitTweetButton = $("<button id='submit-tweet-button'> Submit Tweet</button>");
+        $submitTweetButton.appendTo($right);
+
+        $("#submit-tweet-button").on("click", function(){
+          $anomUser = $(`<a class="user" href="#"> @anomynous: </a>`);
+          $anomMessage = $(`<p class='message'> ${$('#text-box').val()} </pn>`);
+          $anomDate = $(`<p class='date'> ${new Date()} </p>`);
+          $anomTweet = $(`<span class='anomynous-tweets tweets'> </span>`);
+
+          $anomUser.appendTo($anomTweet);
+          $anomMessage.appendTo($anomTweet);
+          $anomDate.appendTo($anomTweet);
+          $allTweetsBox.prepend($anomTweet);
+          $('#text-box').val('');
+        })
 
       });
 
